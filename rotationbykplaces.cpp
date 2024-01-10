@@ -8,8 +8,10 @@ int rotation(int arr[], int n, int k){
     for(int i=k; i<n; i++){
         arr[i-k]=arr[i];
     }
+    int j=0;
     for(int i=n-k; i<n; i++){
-        arr[i]=temp[i-(n-k)];
+        arr[i]=temp[j];
+        j++;
     }
 }
 int main(){
@@ -21,3 +23,5 @@ int main(){
     return 0;
 
 }
+
+

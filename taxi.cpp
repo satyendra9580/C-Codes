@@ -45,16 +45,14 @@ int minTaxisNeeded(int n, vector<int> groupSizes) {
 
 int main() {
     int n;
-    cout<<"Enter the group size: ";
     cin >> n;
     
     vector<int> groupSizes(n);
-    cout<<"Enter the group elements: ";
     for (int i = 0; i < n; ++i) {
         cin >> groupSizes[i];
     }
     
-    cout<<"Number of taxi needed is: " << minTaxisNeeded(n, groupSizes) << endl;
+    cout<< minTaxisNeeded(n, groupSizes) << endl;
     
     return 0;
 }

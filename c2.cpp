@@ -1,65 +1,51 @@
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
 
-void solve() {
-    int n, k;
-    cin >> n >> k;
-    
-    // Store bottles of each brand with their costs
-    vector<vector<ll>> brands(k + 1);
-    
-    for(int i = 0; i < k; i++) {
-        int brand, cost;
-        cin >> brand >> cost;
-        brands[brand].push_back(cost);
+using namespace std;
+int calculateMaxEarnings(int n, int k, const vector<pair<int, int>>& bottles) {
+    unordered_map<int, vector<int>> brandPrices;
+    for (const auto& bottle : bottles) {
+        int brand = bottle.first;
+        int price = bottle.second;
+        brandPrices[brand].push_back(price);
     }
-    
-    // Sort costs in descending order for each brand
-    for(int i = 1; i <= k; i++) {
-        sort(brands[i].begin(), brands[i].end(), greater<ll>());
-    }
-    
-    // Create vector of pairs (sum, count) for each brand
-    vector<pair<ll, int>> brandSums;
-    for(int i = 1; i <= k; i++) {
-        if(brands[i].empty()) continue;
-        
-        ll sum = 0;
-        for(ll cost : brands[i]) {
-            sum += cost;
+    vector<int> maxPrices;
+    for (const auto& entry : brandPrices) {
+        vector<int> prices = entry.second;
+        sort(prices.rbegin(), prices.rend());
+        for (int i = 0; i < min(n, (int)prices.size()); i++) {
+            maxPrices.push_back(prices[i]);
         }
-        brandSums.push_back({sum, (int)brands[i].size()});
     }
-    
-    // Sort brands by average value (sum/count) in descending order
-    sort(brandSums.begin(), brandSums.end(), 
-         [](const pair<ll, int>& a, const pair<ll, int>& b) {
-             return (double)a.first/a.second > (double)b.first/b.second;
-         });
-    
-    // Take the top n brands or fewer if we have less distinct brands
-    ll result = 0;
-    int usedShelves = 0;
-    
-    for(const auto& [sum, count] : brandSums) {
-        if(usedShelves >= n) break;
-        result += sum;
-        usedShelves++;
+    sort(maxPrices.rbegin(), maxPrices.rend());
+    int totalEarnings = 0;
+    for (int i = 0; i < min(n, (int)maxPrices.size()); i++) {
+        totalEarnings += maxPrices[i];
     }
-    
-    cout << result << "\n";
+
+    return totalEarnings;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
     int t;
     cin >> t;
-    while(t--) {
-        solve();
+
+    while (t--) {
+        int n, k;
+        cin >> n >> k;
+
+        vector<pair<int, int>> bottles(k);
+        for (int i = 0; i < k; i++) {
+            int brand, cost;
+            cin >> brand >> cost;
+            bottles[i] = {brand, cost};
+        }
+
+        int result = calculateMaxEarnings(n, k, bottles);
+        cout << result << endl;
     }
-    
+
     return 0;
 }

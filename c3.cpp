@@ -1,57 +1,54 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Function to check if there's a "1100" pattern in a substring
-bool checkPattern(const string& s, int pos) {
-    int n = s.size();
-    // Check from pos-3 to pos+3 for the "1100" pattern
-    for (int i = max(0, pos - 3); i <= min(n - 4, pos); i++) {
-        if (s[i] == '1' && s[i + 1] == '1' && s[i + 2] == '0' && s[i + 3] == '0') {
-            return true;
-        }
+int countOccurrences(string &str, int x) {
+    if (x < 1 || x + 3 > str.size()) 
+        return 0;
+
+    string btr = "1100";
+    for (int y = 0; y <= 3; ++y) {
+        if (str[x + y] != btr[y]) 
+            return 0;
     }
-    return false;
+    return 1;
+}
+
+void solve() {
+    string str;
+    cin >> str;
+    int n = str.length();
+    str = "." + str;
+    int cnt = 0;
+
+    for (int i = 1; i <= n; ++i) 
+        cnt += countOccurrences(str, i);
+
+    int q;
+    cin >> q;
+
+    while (q-- > 0) {
+        int i;
+        char ch;
+        cin >> i >> ch;
+        
+        for (int j = i - 4; j <= i; ++j) 
+            cnt -= countOccurrences(str, j);
+        
+        str[i] = ch;
+        
+        for (int j = i - 4; j <= i; ++j) 
+            cnt += countOccurrences(str, j);
+
+        cout << (cnt > 0 ? "YES" : "NO") << endl;
+    }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    while(t--) {
-        string s;
-        cin >> s;
-        int q;
-        cin >> q;
+    int tests;
+    cin >> tests;
 
-        // Initialize whether "1100" pattern exists in the initial string
-        bool hasPattern = checkPattern(s, 0);
+    while (tests-- > 0) 
+        solve();
 
-        while(q--) {
-            int i, v;
-            cin >> i >> v;
-            i--; // Convert to 0-based indexing
-            
-            // Only proceed if there is a change
-            if (s[i] != '0' + v) {
-                // Check if "1100" pattern is near the updated position before the change
-                if (hasPattern && checkPattern(s, i)) {
-                    hasPattern = false;  // Tentatively unset, will be checked after update
-                }
-                
-                // Apply the update
-                s[i] = '0' + v;
-
-                // Recheck for "1100" pattern near the updated position after the change
-                if (!hasPattern) {
-                    hasPattern = checkPattern(s, i);
-                }
-            }
-
-            // Output the result based on the current state of hasPattern
-            cout << (hasPattern ? "YES" : "NO") << "\n";
-        }
-    }
     return 0;
 }
